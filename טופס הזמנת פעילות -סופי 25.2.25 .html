@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הזמנת פעילות קקל במחלקה לחינוך בתפוצות</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #0E6C4D;
+            padding-bottom: 15px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-row > * {
+            flex: 1;
+        }
+
+        .field-group {
+            margin-bottom: 15px;
+        }
+
+        .required {
+            font-weight: bold;
+        }
+        
+        .required::after {
+            content: " *";
+            color: red;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="date"],
+        input[type="time"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .info-message {
+            background-color: #f0f0f0;
+            color: #1a5d1a;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .notice-message {
+            background-color: #fff4e5;
+            border: 1px solid #ffd89e;
+            color: #946100;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .warning-message {
+            background-color: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .price-list {
+            background-color: #f0f0f0;
+            padding: 10px;
+            position: sticky;
+            top: 20px;
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .activity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .activity-table th, .activity-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: right;
+        }
+
+        .activity-table th {
+            background-color: #1a5d1a;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .submit-button {
+            background-color: #0E6C4D;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-button:hover {
+            background-color: #0a5038;
+        }
+
+        .services-selection {
+            margin: 20px 0;
+        }
+
+        .services-buttons {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+            gap: 5px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .service-button {
+            padding: 12px 5px;
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            white-space: nowrap;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .service-button:hover:not(.disabled) {
+            background-color: #d0d0d0;
+        }
+
+        .service-button.active {
+            background: #0E6C4D;
+            color: white;
+        }
+
+        .service-button.disabled {
+            background-color: #A0AEC0;
+            cursor: not-allowed;
+        }
+
+        .summary-container {
+            border: 1px solid #0E6C4D;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .content-panel {
+            background-color: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .form-radio {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #0E6C4D;
+            border-radius: 50%;
+            margin-left: 8px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .form-radio:checked::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #0E6C4D;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .form-checkbox {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #0E6C4D;
+            border-radius: 3px;
+            margin-left: 8px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .form-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: #0E6C4D;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .checkbox-option, .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .option-details {
+            margin-right: 25px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <h1 style="color: #0E6C4D; font-weight: bold;">הזמנת פעילות קקל במחלקה לחינוך בתפוצות</h1>
+            <p>איסוף מידע נדרש לפתיחת הזמנה של מרכז שדה או יום פעילות בקק"ל באמצעות המחלקה להעצמת הזהות היהודית בתפוצות של החטיבה לחינוך וקהילה</p>
+            <p style="color: red;">שים לב! ניתן לבקש הזמנה רק במידה ומדובר על לפחות 16 יום לפני הפעילות</p>
+        </div>
+
+        <form id="kklForm" class="form-grid">
+            <div class="main-form">
+                <!-- פרטי לקוח -->
+                <section>
+                    <h2 style="color: #0E6C4D; font-weight: bold; border-bottom: 1px solid #0E6C4D; padding-bottom: 10px;">פרטי לקוח</h2>
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="required">האם מדובר בלקוח חדש?</label>
+                            <select id="customerType" required>
+                                <option value="">בחר...</option>
+                                <option value="new">כן - לקוח חדש</option>
+                                <option value="existing">לא - לקוח ותיק</option>
+                                <option value="unknown">אין לי מושג</option>
+                            </select>
+                            <div id="newCustomerNotice" class="notice-message">
+                                במקרה של לקוח חדש, יישלח טופס פתיחת לקוח למייל המפורט בהמשך
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label class="required">שם הארגון או הגוף המזמין</label>
+                            <input type="text" id="organizationName" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="required">איש קשר - שם פרטי</label>
+                            <input type="text" id="contactFirstName" required>
+                        </div>
+                        <div class="field-group">
+                            <label class="required">איש קשר - שם משפחה</label>
+                            <input type="text" id="contactLastName" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="required">איש קשר - מספר טלפון</label>
+                            <input type="tel" id="contactPhone" required>
+                        </div>
+                        <div class="field-group">
+                            <label class="required">איש קשר - כתובת מייל</label>
+                            <input type="email" id="contactEmail" required>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="required">תשלום על ידי</label>
+                        <select id="paymentMethod" required>
+                            <option value="">בחר...</option>
+                            <option value="organization">הלקוח המזמין</option>
+                            <option value="kkl">תקציב קק"ל</option>
+                            <option value="other">אחר</option>
+                        </select>
+                        <input type="text" id="paymentMethodOther" class="hidden" placeholder="פרט">
+                    </div>
+                </section>
+
+                <!-- פרטי הקבוצה -->
+                <section>
+                    <h2 style="color: #0E6C4D; font-weight: bold; border-bottom: 1px solid #0E6C4D; padding-bottom: 10px;">פרטי הקבוצה</h2>
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="required">שם הקבוצה</label>
+                            <input type="text" id="groupName" required>
+                        </div>
+                        <div class="field-group">
+                            <label>שם הפעילות</label>
+                            <input type="text" id="activityName">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="required">כמות משתתפים - לא כולל צוות</label>
+                            <input type="number" id="participantsCount" required>
+                        </div>
+                        <div class="field-group">
+                            <label class="required">קבוצת גיל</label>
+                            <select id="ageGroup" required>
+                                <option value="">בחר...</option>
+                                <option value="elementary">יסודי</option>
+                                <option value="middle">חטיבת ביניים</option>
+                                <option value="high">תיכון</option>
+                                <option value="masa">תוכנית מסע</option>
+                                <option value="yeshiva">מכינה / ישיבה / מדרשה</option>
+                                <option value="students">סטודנטים</option>
+                                <option value="guides">מדריכים</option>
+                                <option value="families">משפחות</option>
+                                <option value="adults">מבוגרים</option>
+                                <option value="other">אחר</option>
+                            </select>
+                            <input type="text" id="ageGroupOther" class="hidden" placeholder="פרט">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="required">מאיזו מדינה מגיעים רוב המשתתפים?</label>
+                            <input type="text" id="countryOrigin" required>
+                        </div>
+                        <div class="field-group">
+                            <label class="required">הרכב הקבוצה - מגדר</label>
+                            <select id="groupGender" required>
+                                <option value="">בחר...</option>
+                                <option value="boys">בנים</option>
+                                <option value="girls">בנות</option>
+                                <option value="mixed">מעורב</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="required">כמות נהגים, מלווים ומי שצריכים לינה</label>
+                        <input type="number" id="staffCount" required>
+                    </div>
+                </section>
+
+                <!-- פרטי פעילות -->
+                <section>
+                    <h2 style="color: #0E6C4D; font-weight: bold; border-bottom: 1px solid #0E6C4D; padding-bottom: 10px;">פרטי פעילות</h2>
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="required">תאריך התחלה</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="field-group">
+                            <label class="required">יום התחלה</label>
+                            <select id="startDay" required>
+                                <option value="">בחר...</option>
+                                <option value="sunday">ראשון</option>
+                                <option value="monday">שני</option>
+                                <option value="tuesday">שלישי</option>
+                                <option value="wednesday">רביעי</option>
+                                <option value="thursday">חמישי</option>
+                                <option value="friday">שישי</option>
+                                <option value="saturday">שבת</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label class="required">שעת התחלה</label>
+                            <input type="time" id="startTime" required>
+                        </div>
+                    </div>
+                    <div class="info-message">
+                        שעת התחלה: מדובר על שעת הגעה לאכסניה לטובת פעילות.
+                        קבלת חדרים לא לפני השעה 16:00
+                        ביום שישי בחורף, יש לתאם קבלת חדרים מוקדם יותר.
+                    </div>
+
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="required">תאריך סיום</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                        <div class="field-group">
+                            <label class="required">יום סיום</label>
+                            <select id="endDay" required>
+                                <option value="">בחר...</option>
+                                <option value="sunday">ראשון</option>
+                                <option value="monday">שני</option>
+                                <option value="tuesday">שלישי</option>
+                                <option value="wednesday">רביעי</option>
+                                <option value="thursday">חמישי</option>
+                                <option value="friday">שישי</option>
+                                <option value="saturday">שבת</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label class="required">שעת סיום</label>
+                            <input type="time" id="endTime" required>
+                        </div>
+                    </div>
+                    <div class="info-message">
+                        שעת סיום: מדובר על שעת היציאה בפועל מהאכסניה.
+                        פינוי חדרים עד השעה 10:00
+                        במוצאי שבת, פינוי חדרים עד שעה אחרי צאת השבת.
+                    </div>
+
+                    <!-- בחירת שירותים -->
+                    <div class="services-selection">
+                        <h3 style="color: #0E6C4D; font-weight: bold; margin-top: 20px;">בחירת שירותים</h3>
+                        
+                        <div id="warning" class="warning-message">
+                            ראשית יש לבחור מרכז שדה
+                        </div>
+                        
+                        <div id="selectedCenterDisplay" class="info-message" style="display: none;">
+                            <strong>מרכז שדה נבחר:</strong> <span id="selectedCenterName"></span>
+                        </div>
+                        
+                        <div class="services-buttons">
+                            <button type="button" class="service-button" id="fieldCenterBtn" style="background-color: #0E6C4D; color: white;" onclick="handleSectionClick('fieldCenter')">בחר מרכז שדה</button>
+                            <button type="button" class="service-button disabled" id="activityBtn" onclick="handleSectionClick('activity')" disabled>בחר סוג פעילות / הדרכה</button>
+                            <button type="button" class="service-button disabled" id="classroomsBtn" onclick="handleSectionClick('classrooms')" disabled>השכרת כיתות / אולמות</button>
+                            <button type="button" class="service-button disabled" id="locationsBtn" onclick="handleSectionClick('locations')" disabled>השכרת מיקומים נוספים</button>
+                            <button type="button" class="service-button disabled" id="mealsBtn" onclick="handleSectionClick('meals')" disabled>שירותי חדר אוכל</button>
+                            <button type="button" class="service-button disabled" id="accommodationBtn" onclick="handleSectionClick('accommodation')" disabled>בחירת שירותי לינה</button>
+                        </div>
+                        
+                        <div id="contentArea" class="content-panel">
+                            <!-- התוכן הדינמי יתווסף כאן -->
+                        </div>
+                    </div>
+
+                    <!-- סיכום פרטי הזמנה -->
+                    <h2 style="color: #0E6C4D; font-weight: bold; border-bottom: 1px solid #0E6C4D; padding-bottom: 10px;">סיכום פרטי הזמנה</h2>
+                    <div class="summary-container" id="orderSummary">
+                        <!-- Here will be populated the summary of the order -->
+                    </div>
+
+                    <!-- הערות נוספות -->
+                    <h2 style="color: #0E6C4D; font-weight: bold; border-bottom: 1px solid #0E6C4D; padding-bottom: 10px;">הערות נוספות</h2>
+                    <div class="info-message">
+                        נא להציף מראש סוגיות כלכליות או טכניות שצפוי שיש לטפל בהם לגבי ההזמנה הזו
+                    </div>
+                    <textarea id="additionalNotes" rows="4"></textarea>
+
+                    <button type="submit" class="submit-button">שלח טופס</button>
+                </section>
+            </div>
+
+            <div class="price-list">
+                <!-- מחירון נגלל -->
+                <div style="height: 800px; background-color: #ddd;">
+                    מחירון
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // מידע גלובלי
+        const state = {
+            selectedCenter: '',
+            currentSection: '',
+            selectedActivities: new Set(),
+            formData: {},
+            odtClicked: false
+        };
+
+        // טיפול בלחיצה על מדור
+        function handleSectionClick(sectionId) {
+            if (sectionId !== 'fieldCenter' && !state.selectedCenter) {
+                document.getElementById('warning').style.display = 'block';
+                return;
+            }
+
+            state.currentSection = state.currentSection === sectionId ? '' : sectionId;
+            document.getElementById('warning').style.display = 'none';
+            
+            // עדכון הכפתורים ואזור התוכן
+            const contentArea = document.getElementById('contentArea');
+            const buttons = document.querySelectorAll('.service-button');
+            
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            if (state.currentSection) {
+                document.getElementById(sectionId + 'Btn').classList.add('active');
+                contentArea.style.display = 'block';
+                renderContent();
+            } else {
+                contentArea.style.display = 'none';
+            }
+        }
+
+        // רינדור התוכן של המדור הנבחר
+        function renderContent() {
+            const contentArea = document.getElementById('contentArea');
+
+            switch (state.currentSection) {
+                case 'fieldCenter':
+                    contentArea.innerHTML = renderFieldCenters();
+                    break;
+                case 'activity':
+                    contentArea.innerHTML = renderActivities();
+                    break;
+                case 'classrooms':
+                    contentArea.innerHTML = renderClassrooms();
+                    break;
+                case 'locations':
+                    contentArea.innerHTML = renderLocations();
+                    break;
+                case 'meals':
+                    contentArea.innerHTML = renderMeals();
+                    break;
+                case 'accommodation':
+                    contentArea.innerHTML = renderAccommodation();
+                    break;
+            }
+        }
+
+        // רינדור מרכזי השדה
+        function renderFieldCenters() {
+            const fieldCenters = [
+                { id: 'nesharim', name: 'מרכז שדה נס הרים' },
+                { id: 'tzipori', name: 'מרכז שדה ציפורי' },
+                { id: 'lavi', name: 'מרכז שדה לביא' },
+                { id: 'shuni', name: 'מרכז שדה שוני' },
+                { id: 'yatir', name: 'מרכז שדה יתיר' },
+                { id: 'ilanot', name: 'יער האילנות' }
+            ];
+            
+            return fieldCenters.map(center => `
+                <label class="radio-option">
+                    <input type="radio" 
+                           name="fieldCenter" 
+                           value="${center.id}" 
+                           class="form-radio"
+                           ${state.selectedCenter === center.id ? 'checked' : ''}
+                           onchange="selectFieldCenter('${center.id}')">
+                    ${center.name}
+                </label>
+            `).join('');
+        }
+
+        // בחירת מרכז שדה
+        function selectFieldCenter(centerId) {
+            state.selectedCenter = centerId;
+            
+            // הפעלת כל הכפתורים
+            const buttons = document.querySelectorAll('.service-button.disabled');
+            buttons.forEach(button => {
+                button.classList.remove('disabled');
+                button.disabled = false;
+                // הפיכת כל הכפתורים לירוקים
+                button.style.backgroundColor = '#0E6C4D';
+                button.style.color = 'white';
+            });
+            
+            // הצגת שם מרכז השדה הנבחר
+            const fieldCenters = [
+                { id: 'nesharim', name: 'מרכז שדה נס הרים' },
+                { id: 'tzipori', name: 'מרכז שדה ציפורי' },
+                { id: 'lavi', name: 'מרכז שדה לביא' },
+                { id: 'shuni', name: 'מרכז שדה שוני' },
+                { id: 'yatir', name: 'מרכז שדה יתיר' },
+                { id: 'ilanot', name: 'יער האילנות' }
+            ];
+            
+            const selectedCenter = fieldCenters.find(c => c.id === centerId);
+            const selectedCenterDisplay = document.getElementById('selectedCenterDisplay');
+            const selectedCenterName = document.getElementById('selectedCenterName');
+            
+            if (selectedCenter && selectedCenterDisplay && selectedCenterName) {
+                selectedCenterName.textContent = selectedCenter.name;
+                selectedCenterDisplay.style.display = 'block';
+            }
+            
+            updateSummary();
+        }
+
+        // רינדור פעילויות
+        function renderActivities() {
+            const activities = [
+                { id: 'guide', name: 'הזמנת הדרכה בלבד - מורה דרך' },
+                { id: 'evening', name: 'הזמנת פעילות חינוכית בערב' },
+                { id: 'odt', name: 'הזמנת פעילות ODT בלבד במרכז שדה' },
+                { id: 'other', name: 'אחר' }
+            ];
+
+            return activities.map(activity => `
+                <div class="mb-4">
+                    <label class="checkbox-option">
+                        <input type="checkbox" 
+                               class="form-checkbox"
+                               ${state.selectedActivities.has(activity.id) ? 'checked' : ''}
+                               onchange="toggleActivity('${activity.id}')">
+                        ${activity.name}
+                    </label>
+                    ${renderActivityExtra(activity)}
+                </div>
+            `).join('');
+        }
+
+        // רינדור שדות נוספים לפעילויות
+        function renderActivityExtra(activity) {
+            if (!state.selectedActivities.has(activity.id)) return '';
+
+            switch (activity.id) {
+                case 'guide':
+                    return `
+                        <div class="option-details">
+                            <p>מספר מדריכים או מורי דרך - נא לפרט בקשות מיוחדות:</p>
+                            <textarea class="input-field" rows="3" onchange="handleGuideDetails(event)">${state.formData.guideDetails || ''}</textarea>
+                        </div>
+                    `;
+                case 'evening':
+                    return `
+                        <div class="option-details">
+                            <p>נא לפרט את סוג הפעילות הרצויה:</p>
+                            <textarea class="input-field" rows="3" onchange="handleEveningDetails(event)">${state.formData.eveningDetails || ''}</textarea>
+                        </div>
+                    `;
+                case 'odt':
+                    return `
+                        <div class="option-details">
+                            <p>פעילות ODT כגון: פעילות במרכז השדה, מגרש ספורט</p>
+                            <textarea class="input-field" rows="3" onchange="handleODTDetails(event)">${state.formData.odtDetails || ''}</textarea>
+                        </div>
+                    `;
+                case 'other':
+                    return `
+                        <div class="option-details">
+                            <p>נא לפרט:</p>
+                            <input type="text" 
+                                   class="input-field" 
+                                   placeholder="פרט"
+                                   value="${state.formData.otherActivity || ''}"
+                                   onchange="handleOtherActivity(event)">
+                        </div>
+                    `;
+                default:
+                    return '';
+            }
+        }
+
+        // טיפול בבחירת פעילות
+        function toggleActivity(activityId) {
+            if (state.selectedActivities.has(activityId)) {
+                state.selectedActivities.delete(activityId);
+            } else {
+                state.selectedActivities.add(activityId);
+                if (activityId === 'odt' && !state.odtClicked) {
+                    alert('פעילות ODT כגון: פעילות במרכז השדה, מגרש ספורט');
+                    state.odtClicked = true;
+                }
+            }
+            renderContent();
+            updateSummary();
+        }
+
+        // טיפול בפרטי הדרכה
+        function handleGuideDetails(event) {
+            state.formData.guideDetails = event.target.value;
+            updateSummary();
+        }
+
+        // טיפול בפרטי פעילות ערב
+        function handleEveningDetails(event) {
+            state.formData.eveningDetails = event.target.value;
+            updateSummary();
+        }
+
+        // טיפול בפרטי ODT
+        function handleODTDetails(event) {
+            state.formData.odtDetails = event.target.value;
+            updateSummary();
+        }
+
+        // טיפול בפרטי פעילות אחרת
+        function handleOtherActivity(event) {
+            state.formData.otherActivity = event.target.value;
+            updateSummary();
+        }
+
+        // רינדור כיתות
+        function renderClassrooms() {
+            const days = getDaysCount();
+            
+            return `
+                <div class="info-message">
+                    כיתה ממוצעת מכילה עד 30 משתתפים
+                </div>
+                <p class="mb-3">כתוב מספר כיתות מבוקש לכל יום:</p>
+                ${Array.from({length: days}, (_, i) => i + 1).map(day => `
+                    <div class="form-row mb-3">
+                        <div class="w-1/4" style="width: 25%;">יום ${day}</div>
+                        <div class="w-3/4" style="width: 75%;">
+                            <input type="number" 
+                                   class="input-field" 
+                                   min="0"
+                                   value="${state.formData['classroom_day_' + day] || ''}"
+                                   onchange="updateClassrooms(${day}, this.value)">
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // עדכון מספר כיתות
+        function updateClassrooms(day, value) {
+            state.formData['classroom_day_' + day] = value;
+            updateSummary();
+        }
+
+        // רינדור מיקומים נוספים
+        function renderLocations() {
+            const days = getDaysCount();
+            const locations = [
+                { id: 'hall', name: 'אולם גדול' },
+                { id: 'tent', name: 'אוהל' },
+                { id: 'synagogue', name: 'בית כנסת' },
+                { id: 'kitchen', name: 'מטבח שדה' },
+                { id: 'other', name: 'אחר' }
+            ];
+
+            return locations.map(location => `
+                <div class="mb-4">
+                    <label class="checkbox-option">
+                        <input type="checkbox" 
+                               class="form-checkbox"
+                               ${state.formData['location_' + location.id] ? 'checked' : ''}
+                               onchange="toggleLocation('${location.id}')">
+                        ${location.name}
+                    </label>
+                    ${renderLocationDetails(location)}
+                </div>
+            `).join('');
+        }
+
+        // רינדור פרטי מיקום
+        function renderLocationDetails(location) {
+            if (!state.formData['location_' + location.id]) return '';
+
+            const days = getDaysCount();
+
+            if (location.id === 'other') {
+                return `
+                    <div class="option-details">
+                        <input type="text" 
+                               class="input-field" 
+                               placeholder="פרט"
+                               value="${state.formData.locationOtherDetails || ''}"
+                               onchange="updateLocationOtherDetails(event)">
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="option-details">
+                    ${Array.from({length: days}, (_, i) => i + 1).map(day => `
+                        <div class="form-row mb-2">
+                            <div style="width: 25%;">יום ${day}</div>
+                            <div style="width: 75%;">
+                                <input type="text" 
+                                       class="input-field"
+                                       placeholder="פרט האם נדרש ${location.name} ביום זה ובאיזה שעות"
+                                       value="${(state.formData['location_' + location.id + '_day_' + day]) || ''}"
+                                       onchange="updateLocationDay('${location.id}', ${day}, this.value)">
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // טיפול בבחירת מיקום
+        function toggleLocation(locationId) {
+            state.formData['location_' + locationId] = !state.formData['location_' + locationId];
+            renderContent();
+            updateSummary();
+        }
+
+        // עדכון פרטי יום למיקום
+        function updateLocationDay(locationId, day, value) {
+            state.formData['location_' + locationId + '_day_' + day] = value;
+            updateSummary();
+        }
+
+        // עדכון פרטים אחרים למיקום
+        function updateLocationOtherDetails(event) {
+            state.formData.locationOtherDetails = event.target.value;
+            updateSummary();
+        }
+
+        // רינדור שירותי חדר אוכל
+        function renderMeals() {
+            const days = getDaysCount();
+            const mealOptions = [
+                { id: 'breakfast', name: 'כל התקופה - רק ארוחות בוקר' },
+                { id: 'halfboard', name: 'כל התקופה - ארוחת בוקר וערב (חצי פנסיון)' },
+                { id: 'fullboard', name: 'כל התקופה - כל הארוחות (פנסיון מלא)' },
+                { id: 'none', name: 'ללא ארוחות בכלל' },
+                { id: 'other', name: 'אחר' }
+            ];
+
+            return `
+                <div class="mb-4">
+                    ${mealOptions.map(option => `
+                        <div class="mb-3">
+                            <label class="radio-option">
+                                <input type="radio" 
+                                       name="mealService"
+                                       class="form-radio"
+                                       value="${option.id}"
+                                       ${state.formData.mealService === option.id ? 'checked' : ''}
+                                       onchange="selectMealService('${option.id}')">
+                                ${option.name}
+                            </label>
+                            ${renderMealDetails(option)}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // רינדור פרטי ארוחות
+        function renderMealDetails(option) {
+            if (state.formData.mealService !== option.id) return '';
+            
+            const days = getDaysCount();
+
+            if (option.id === 'other') {
+                return `
+                    <div class="option-details">
+                        <input type="text" 
+                               class="input-field" 
+                               placeholder="פרט"
+                               value="${state.formData.mealOtherDetails || ''}"
+                               onchange="updateMealOtherDetails(event)">
+                        
+                        ${Array.from({length: days}, (_, i) => i + 1).map(day => `
+                            <div class="form-row mb-2" style="margin-top: 10px;">
+                                <div style="width: 25%;">יום ${day}</div>
+                                <div style="width: 75%;">
+                                    <input type="text" 
+                                           class="input-field"
+                                           placeholder="פרט דרישות מיוחדות לארוחות ביום זה"
+                                           value="${state.formData['meal_day_' + day] || ''}"
+                                           onchange="updateMealDay(${day}, this.value)">
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            if (option.id !== 'none') {
+                return `
+                    <div class="option-details">
+                        ${Array.from({length: days}, (_, i) => i + 1).map(day => `
+                            <div class="form-row mb-2">
+                                <div style="width: 25%;">יום ${day}</div>
+                                <div style="width: 75%;">
+                                    <input type="text" 
+                                           class="input-field"
+                                           placeholder="פרט דרישות מיוחדות לארוחות ביום זה"
+                                           value="${state.formData['meal_day_' + day] || ''}"
+                                           onchange="updateMealDay(${day}, this.value)">
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            return '';
+        }
+
+        // טיפול בבחירת שירות ארוחות
+        function selectMealService(serviceId) {
+            state.formData.mealService = serviceId;
+            renderContent();
+            updateSummary();
+        }
+
+        // עדכון פרטי ארוחות ליום
+        function updateMealDay(day, value) {
+            state.formData['meal_day_' + day] = value;
+            updateSummary();
+        }
+
+        // עדכון פרטים אחרים לארוחות
+        function updateMealOtherDetails(event) {
+            state.formData.mealOtherDetails = event.target.value;
+            updateSummary();
+        }
+
+        // רינדור שירותי לינה
+        function renderAccommodation() {
+            const days = getDaysCount();
+            const accommodations = getAccommodationsByCenter(state.selectedCenter);
+            
+            return `
+                <div class="mb-4">
+                    ${accommodations.map(acc => `
+                        <div class="mb-3">
+                            <label class="checkbox-option">
+                                <input type="checkbox" 
+                                       class="form-checkbox"
+                                       ${state.formData['accommodation_' + acc.id] ? 'checked' : ''}
+                                       onchange="toggleAccommodation('${acc.id}')">
+                                ${acc.name}
+                            </label>
+                            ${renderAccommodationDetails(acc, days)}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // קבלת אפשרויות לינה לפי מרכז שדה
+        function getAccommodationsByCenter(centerId) {
+            const accommodationOptions = {
+                'nesharim': [
+                    { id: 'none', name: 'ללא לינה' },
+                    { id: 'camping', name: 'גיחה (עד 350 איש)' },
+                    { id: 'cabins', name: 'בקתות - 28 בקתות של 6 מיטות' },
+                    { id: 'accessible_cabins', name: 'בקתות - 3 בקתות נגישות של 3 מיטות' }
+                ],
+                'tzipori': [
+                    { id: 'none', name: 'ללא לינה' },
+                    { id: 'camping', name: 'גיחה (עד 200 איש)' },
+                    { id: 'cabins', name: 'בקתות - 3 בקתות של עד 5 מיטות' }
+                ],
+                'lavi': [
+                    { id: 'none', name: 'ללא לינה' },
+                    { id: 'camping', name: 'גיחה (עד 200 איש)' },
+                    { id: 'cabins', name: 'בקתות - 11 בקתות של עד 5 מיטות' },
+                    { id: 'tents', name: 'אוהלים - 12 אוהלים של עד 8 אנשים באוהל' }
+                ],
+                'shuni': [
+                    { id: 'none', name: 'ללא לינה' }
+                ],
+                'yatir': [
+                    { id: 'none', name: 'ללא לינה' },
+                    { id: 'rooms', name: 'חדרים - 7 חדרים של 3-4 מיטות' },
+                    { id: 'large_tent', name: 'אוהל - מתאים ללינה של עד 100 איש' },
+                    { id: 'medium_tents', name: 'אוהלים - 2 אוהלים מתאימים ללינה של עד 50 איש' }
+                ],
+                'ilanot': [
+                    { id: 'none', name: 'ללא לינה' }
+                ]
+            };
+            
+            return accommodationOptions[centerId] || [{ id: 'none', name: 'ללא לינה' }];
+        }
+
+        // רינדור פרטי לינה
+        function renderAccommodationDetails(accommodation, days) {
+            if (!state.formData['accommodation_' + accommodation.id] || accommodation.id === 'none') return '';
+
+            return `
+                <div class="option-details">
+                    ${Array.from({length: days}, (_, i) => i + 1).map(day => `
+                        <div class="form-row mb-2">
+                            <div style="width: 25%;">יום ${day}</div>
+                            <div style="width: 75%;">
+                                <input type="text" 
+                                       class="input-field"
+                                       placeholder="פרט דרישות מיוחדות ללינה ביום זה"
+                                       value="${(state.formData['accommodation_' + accommodation.id + '_day_' + day]) || ''}"
+                                       onchange="updateAccommodationDay('${accommodation.id}', ${day}, this.value)">
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // טיפול בבחירת לינה
+        function toggleAccommodation(accommodationId) {
+            state.formData['accommodation_' + accommodationId] = !state.formData['accommodation_' + accommodationId];
+            renderContent();
+            updateSummary();
+        }
+
+        // עדכון פרטי יום ללינה
+        function updateAccommodationDay(accommodationId, day, value) {
+            state.formData['accommodation_' + accommodationId + '_day_' + day] = value;
+            updateSummary();
+        }
+
+        // קבלת מספר ימים לפי תאריכי ההזמנה
+        function getDaysCount() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate) return 3; // ברירת מחדל אם לא נבחרו תאריכים
+            
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            
+            // ממיר למילי-שניות וחישוב ההפרש בימים
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // מוסיף 1 כדי לכלול את יום ההגעה
+            
+            return diffDays;
+        }
+
+        // עדכון סיכום ההזמנה
+        function updateSummary() {
+            const summaryEl = document.getElementById('orderSummary');
+            let summaryHTML = '';
+            
+            // פרטי הקבוצה
+            const organization = document.getElementById('organizationName').value;
+            const contactName = `${document.getElementById('contactFirstName').value} ${document.getElementById('contactLastName').value}`;
+            const contactInfo = `${document.getElementById('contactPhone').value}, ${document.getElementById('contactEmail').value}`;
+            const groupName = document.getElementById('groupName').value;
+            const participants = document.getElementById('participantsCount').value;
+            const startDate = document.getElementById('startDate').value ? new Date(document.getElementById('startDate').value).toLocaleDateString('he-IL') : '';
+            const endDate = document.getElementById('endDate').value ? new Date(document.getElementById('endDate').value).toLocaleDateString('he-IL') : '';
+            
+            if (organization || contactName || groupName) {
+                summaryHTML += '<h3 style="color: #0E6C4D; margin-bottom: 10px;">פרטי הזמנה</h3>';
+                
+                if (organization) summaryHTML += `<p><strong>ארגון:</strong> ${organization}</p>`;
+                if (contactName !== ' ') summaryHTML += `<p><strong>איש קשר:</strong> ${contactName}</p>`;
+                if (contactInfo !== ',') summaryHTML += `<p><strong>פרטי התקשרות:</strong> ${contactInfo}</p>`;
+                if (groupName) summaryHTML += `<p><strong>קבוצה:</strong> ${groupName}</p>`;
+                if (participants) summaryHTML += `<p><strong>מספר משתתפים:</strong> ${participants}</p>`;
+                if (startDate && endDate) summaryHTML += `<p><strong>תאריכים:</strong> ${startDate} - ${endDate}</p>`;
+            }
+            
+            // מרכז שדה
+            if (state.selectedCenter) {
+                const fieldCenters = [
+                    { id: 'nesharim', name: 'מרכז שדה נס הרים' },
+                    { id: 'tzipori', name: 'מרכז שדה ציפורי' },
+                    { id: 'lavi', name: 'מרכז שדה לביא' },
+                    { id: 'shuni', name: 'מרכז שדה שוני' },
+                    { id: 'yatir', name: 'מרכז שדה יתיר' },
+                    { id: 'ilanot', name: 'יער האילנות' }
+                ];
+                
+                const center = fieldCenters.find(c => c.id === state.selectedCenter);
+                if (center) {
+                    summaryHTML += '<h3 style="color: #0E6C4D; margin-top: 15px; margin-bottom: 10px;">שירותים</h3>';
+                    summaryHTML += `<p><strong>מרכז שדה:</strong> ${center.name}</p>`;
+                }
+            }
+            
+            
+            // פעילויות שנבחרו
+            if (state.selectedActivities.size > 0) {
+                const activities = [
+                    { id: 'guide', name: 'הזמנת הדרכה בלבד - מורה דרך' },
+                    { id: 'evening', name: 'הזמנת פעילות חינוכית בערב' },
+                    { id: 'odt', name: 'הזמנת פעילות ODT בלבד במרכז שדה' },
+                    { id: 'other', name: 'אחר' }
+                ];
+                
+                summaryHTML += `<p><strong>פעילויות:</strong></p><ul style="list-style-type: disc; padding-right: 20px;">`;
+                
+                state.selectedActivities.forEach(activityId => {
+                    const activity = activities.find(a => a.id === activityId);
+                    if (activity) {
+                        let activityText = activity.name;
+                        
+                        if (activityId === 'guide' && state.formData.guideDetails) {
+                            activityText += ` (${state.formData.guideDetails})`;
+                        } else if (activityId === 'evening' && state.formData.eveningDetails) {
+                            activityText += ` (${state.formData.eveningDetails})`;
+                        } else if (activityId === 'odt' && state.formData.odtDetails) {
+                            activityText += ` (${state.formData.odtDetails})`;
+                        } else if (activityId === 'other' && state.formData.otherActivity) {
+                            activityText += ` (${state.formData.otherActivity})`;
+                        }
+                        
+                        summaryHTML += `<li>${activityText}</li>`;
+                    }
+                });
+                
+                summaryHTML += `</ul>`;
+            }
+            
+            // כיתות
+            const classroomDays = [];
+            for (let i = 1; i <= getDaysCount(); i++) {
+                if (state.formData['classroom_day_' + i]) {
+                    classroomDays.push(i);
+                }
+            }
+            
+            if (classroomDays.length > 0) {
+                summaryHTML += `<p><strong>כיתות:</strong></p><ul style="list-style-type: disc; padding-right: 20px;">`;
+                
+                classroomDays.forEach(day => {
+                    summaryHTML += `<li>יום ${day}: ${state.formData['classroom_day_' + day]} כיתות</li>`;
+                });
+                
+                summaryHTML += `</ul>`;
+            }
+            
+            // מיקומים נוספים
+            const locations = [
+                { id: 'hall', name: 'אולם גדול' },
+                { id: 'tent', name: 'אוהל' },
+                { id: 'synagogue', name: 'בית כנסת' },
+                { id: 'kitchen', name: 'מטבח שדה' },
+                { id: 'other', name: 'אחר' }
+            ];
+            
+            const selectedLocations = locations.filter(loc => state.formData['location_' + loc.id]);
+            
+            if (selectedLocations.length > 0) {
+                summaryHTML += `<p><strong>מיקומים נוספים:</strong></p><ul style="list-style-type: disc; padding-right: 20px;">`;
+                
+                selectedLocations.forEach(location => {
+                    let locationText = location.name;
+                    
+                    if (location.id === 'other' && state.formData.locationOtherDetails) {
+                        locationText += ` (${state.formData.locationOtherDetails})`;
+                    }
+                    
+                    summaryHTML += `<li>${locationText}</li>`;
+                });
+                
+                summaryHTML += `</ul>`;
+            }
+            
+            // ארוחות
+            if (state.formData.mealService) {
+                const mealOptions = [
+                    { id: 'breakfast', name: 'כל התקופה - רק ארוחות בוקר' },
+                    { id: 'halfboard', name: 'כל התקופה - ארוחת בוקר וערב (חצי פנסיון)' },
+                    { id: 'fullboard', name: 'כל התקופה - כל הארוחות (פנסיון מלא)' },
+                    { id: 'none', name: 'ללא ארוחות בכלל' },
+                    { id: 'other', name: 'אחר' }
+                ];
+                
+                const mealOption = mealOptions.find(m => m.id === state.formData.mealService);
+                
+                if (mealOption) {
+                    summaryHTML += `<p><strong>שירותי חדר אוכל:</strong> ${mealOption.name}</p>`;
+                    
+                    if (state.formData.mealService === 'other' && state.formData.mealOtherDetails) {
+                        summaryHTML += `<p style="padding-right: 20px;">פירוט: ${state.formData.mealOtherDetails}</p>`;
+                    }
+                }
+            }
+            
+            // לינה
+            if (state.selectedCenter) {
+                const accommodations = getAccommodationsByCenter(state.selectedCenter)
+                    .filter(acc => state.formData['accommodation_' + acc.id]);
+                
+                summaryHTML += `<p><strong>שירותי לינה:</strong> `;
+                
+                if (accommodations.length > 0) {
+                    summaryHTML += `</p><ul style="list-style-type: disc; padding-right: 20px;">`;
+                    
+                    accommodations.forEach(acc => {
+                        summaryHTML += `<li>${acc.name}</li>`;
+                    });
+                    
+                    summaryHTML += `</ul>`;
+                } else {
+                    summaryHTML += `לא נבחרו שירותי לינה</p>`;
+                }
+            }
+            
+            summaryEl.innerHTML = summaryHTML;
+        }
+
+        // טיפול בשדה לקוח חדש
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('customerType').addEventListener('change', function() {
+                const notice = document.getElementById('newCustomerNotice');
+                notice.style.display = (this.value === 'new' || this.value === 'unknown') ? 'block' : 'none';
+            });
+
+            // טיפול באפשרות "אחר" בשדה תשלום
+            document.getElementById('paymentMethod').addEventListener('change', function() {
+                const otherField = document.getElementById('paymentMethodOther');
+                otherField.classList.toggle('hidden', this.value !== 'other');
+            });
+
+            // טיפול באפשרות "אחר" בשדה קבוצת גיל
+            document.getElementById('ageGroup').addEventListener('change', function() {
+                const otherField = document.getElementById('ageGroupOther');
+                otherField.classList.toggle('hidden', this.value !== 'other');
+            });
+
+            // עדכון אוטומטי של היום בשבוע לפי התאריך שנבחר
+            document.getElementById('startDate').addEventListener('change', function() {
+                updateDayFromDate(this.value, 'startDay');
+                checkOrderLeadTime();
+                updateSummary();
+            });
+
+            document.getElementById('endDate').addEventListener('change', function() {
+                updateDayFromDate(this.value, 'endDay');
+                updateSummary();
+            });
+
+            // עדכון שדות בטופס לעדכון הסיכום
+            const formFields = document.querySelectorAll('input, select, textarea');
+            formFields.forEach(field => {
+                field.addEventListener('change', updateSummary);
+                field.addEventListener('input', updateSummary);
+            });
+
+            // שליחת הטופס
+            document.getElementById('kklForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // בדיקת שדות חובה עם ערכים תקינים
+                const requiredFields = document.querySelectorAll('[required]');
+                let formValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        formValid = false;
+                        field.style.borderColor = 'red';
+                    } else {
+                        field.style.borderColor = '#ddd';
+                    }
+                });
+                
+                if (!formValid) {
+                    alert('נא למלא את כל שדות החובה המסומנים בכוכבית');
+                    return;
+                }
+                
+                // בדיקת אימייל תקין
+                const emailField = document.getElementById('contactEmail');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailField.value)) {
+                    alert('נא להזין כתובת אימייל תקינה');
+                    emailField.style.borderColor = 'red';
+                    return;
+                }
+                
+                // בדיקת טלפון תקין
+                const phoneField = document.getElementById('contactPhone');
+                const phoneRegex = /^[0-9\-\+\s]{9,15}$/;
+                if (!phoneRegex.test(phoneField.value)) {
+                    alert('נא להזין מספר טלפון תקין');
+                    phoneField.style.borderColor = 'red';
+                    return;
+                }
+
+                // בדיקה אם נבחר מרכז שדה
+                if (!state.selectedCenter) {
+                    alert('חובה לבחור מרכז שדה');
+                    document.getElementById('warning').style.display = 'block';
+                    return;
+                }
+                
+                // איסוף נתונים מהטופס
+                const formData = {
+                    customerDetails: {
+                        type: document.getElementById('customerType').value,
+                        organization: document.getElementById('organizationName').value,
+                        contactName: {
+                            first: document.getElementById('contactFirstName').value,
+                            last: document.getElementById('contactLastName').value,
+                            phone: document.getElementById('contactPhone').value,
+                            email: document.getElementById('contactEmail').value
+                        },
+                        paymentMethod: document.getElementById('paymentMethod').value,
+                        paymentMethodOther: document.getElementById('paymentMethodOther').value
+                    },
+                    groupDetails: {
+                        name: document.getElementById('groupName').value,
+                        activityName: document.getElementById('activityName').value,
+                        participantsCount: document.getElementById('participantsCount').value,
+                        ageGroup: document.getElementById('ageGroup').value,
+                        ageGroupOther: document.getElementById('ageGroupOther').value,
+                        countryOrigin: document.getElementById('countryOrigin').value,
+                        gender: document.getElementById('groupGender').value,
+                        staffCount: document.getElementById('staffCount').value
+                    },
+                    activityDetails: {
+                        startDate: document.getElementById('startDate').value,
+                        startDay: document.getElementById('startDay').value,
+                        startTime: document.getElementById('startTime').value,
+                        endDate: document.getElementById('endDate').value,
+                        endDay: document.getElementById('endDay').value,
+                        endTime: document.getElementById('endTime').value,
+                        fieldCenter: state.selectedCenter,
+                        services: state.formData,
+                        notes: document.getElementById('additionalNotes').value
+                    }
+                };
+                
+                console.log('Form data:', formData);
+                alert('הטופס נשלח בהצלחה!');
+                // כאן יש להוסיף קוד לשליחת הטופס לשרת
+            });
+        });
+
+        // פונקציות עזר
+        // עדכון היום בשבוע לפי תאריך
+        function updateDayFromDate(dateStr, dayFieldId) {
+            if (!dateStr) return;
+            
+            const date = new Date(dateStr);
+            const dayIndex = date.getDay();
+            const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            
+            document.getElementById(dayFieldId).value = days[dayIndex];
+        }
+
+        // בדיקת תקופת הזמנה - לפחות 16 יום לפני הפעילות
+        function checkOrderLeadTime() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            if (!startDate || isNaN(startDate.getTime())) return;
+            
+            const today = new Date();
+            const minDate = new Date();
+            minDate.setDate(today.getDate() + 16);
+            
+            if (startDate < minDate) {
+                alert('לא ניתן להזמין פעילות בפחות מ-16 ימים מראש');
+                document.getElementById('startDate').value = '';
+            }
+        }
+    </script>
