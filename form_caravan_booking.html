@@ -104,6 +104,17 @@
             box-shadow: 0 0 0 3px rgba(14, 108, 77, 0.1);
             outline: none;
         }
+        
+        .form-group input[type="number"] {
+            height: 42px; /* Match the height of select elements */
+            box-sizing: border-box;
+        }
+        
+        /* Make sure select elements have consistent height */
+        .form-group select {
+            height: 42px;
+            box-sizing: border-box;
+        }
 
         .responsibilities {
             margin: 20px 0;
@@ -513,24 +524,30 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="targetAudience">Who is the target audience for the Caravan program *</label>
-            <select id="targetAudience" name="targetAudience" required>
-                <option value="">Select target audience</option>
-                <option value="kindergarten">Kindergarten (ages 3-5)</option>
-                <option value="elementary">Elementary/Lower schools</option>
-                <option value="middle">Middle Schools</option>
-                <option value="high">High Schools</option>
-                <option value="youth">Youth Movements</option>
-                <option value="camps">Camps</option>
-                <option value="college">College Students</option>
-                <option value="community">Community Centers</option>
-                <option value="synagogue">Synagogue</option>
-                <option value="aged">Old Aged Homes</option>
-                <option value="other">Other</option>
-            </select>
-            <div id="otherAudienceField" class="other-field">
-                <input type="text" name="otherAudienceDetails" placeholder="Please specify other audience details">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="targetAudience">Who is the target audience for the Caravan program *</label>
+                <select id="targetAudience" name="targetAudience" required>
+                    <option value="">Select target audience</option>
+                    <option value="kindergarten">Kindergarten (ages 3-5)</option>
+                    <option value="elementary">Elementary/Lower schools</option>
+                    <option value="middle">Middle Schools</option>
+                    <option value="high">High Schools</option>
+                    <option value="youth">Youth Movements</option>
+                    <option value="camps">Camps</option>
+                    <option value="college">College Students</option>
+                    <option value="community">Community Centers</option>
+                    <option value="synagogue">Synagogue</option>
+                    <option value="aged">Old Aged Homes</option>
+                    <option value="other">Other</option>
+                </select>
+                <div id="otherAudienceField" class="other-field">
+                    <input type="text" name="otherAudienceDetails" placeholder="Please specify other audience details">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="participants">Estimated number of participants *</label>
+                <input type="number" id="participants" name="participants" min="1" required>
             </div>
         </div>
 
@@ -546,6 +563,7 @@
                     <th>Arrival Date</th>
                     <th>Departure Date</th>
                     <th>Target Audience</th>
+                    <th>Participants</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -573,6 +591,7 @@
                             <input type="text" name="otherCityAudience1" placeholder="Please specify audience">
                         </div>
                     </td>
+                    <td><input type="number" name="multiParticipants1" min="1" placeholder="Number of participants"></td>
                     <td><button type="button" class="delete-city" title="Remove city"><i class="fas fa-trash-alt"></i></button></td>
                 </tr>
             </tbody>
@@ -703,6 +722,7 @@
                         <input type="text" name="otherCityAudience${cityRowCount}" placeholder="Please specify audience">
                     </div>
                 </td>
+                <td><input type="number" name="multiParticipants${cityRowCount}" min="1" placeholder="Number of participants"></td>
                 <td><button type="button" class="delete-city" title="Remove city"><i class="fas fa-trash-alt"></i></button></td>
             `;
             document.getElementById('cityTableBody').appendChild(newRow);
@@ -810,6 +830,14 @@
             const cityRows = document.querySelectorAll('#cityTableBody tr');
             
             cityRows.forEach((row) => {
+                const participants = row.querySelector('input[type="number"]');
+                if (participants && (!participants.value || participants.value < 1)) {
+                    alert('Please provide a valid number of participants for all cities');
+                    participants.focus();
+                    cityDatesValid = false;
+                    return;
+                }
+                
                 const cityArrival = new Date(row.querySelector('input[type="date"]:nth-of-type(1)').value);
                 const cityDeparture = new Date(row.querySelector('input[type="date"]:nth-of-type(2)').value);
                 
