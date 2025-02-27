@@ -124,13 +124,17 @@
             padding-left: 5px;
         }
 
-        .responsibilities-list li:before {
+        .responsibilities-list > li:before {
             font-family: 'Font Awesome 6 Free';
             content: '\f00c';
             font-weight: 900;
             position: absolute;
             left: -25px;
             color: #0E6C4D;
+        }
+        
+        .responsibilities-list ul li:before {
+            content: '';
         }
 
         .icon-header:before {
@@ -330,12 +334,63 @@
         .delete-city:hover {
             color: #c0392b;
         }
+
+        /* GDPR Notice Styles */
+        .gdpr-notice {
+            border-left: 4px solid #006747;
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .gdpr-notice h3 {
+            color: #006747;
+            margin-top: 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .gdpr-notice h3 i {
+            margin-right: 10px;
+        }
+        
+        .consent-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>KKL-JNF Educational Caravans 2025 - Request Form</h1>
     </div>
+
+    <!-- GDPR Notice Section - ADDED AS REQUESTED -->
+    <div class="gdpr-notice">
+        <h3><i class="fas fa-shield-alt"></i> Data Protection</h3>
+        <p>All collected data must be securely stored in compliance with GDPR regulations. Some details, such as contact information and accommodation preferences, may be shared with service providers like hotels for logistical arrangements. This must be clearly communicated to users in the form, and explicit consent should be obtained for data sharing.</p>
+        
+        <div class="consent-section">
+            <h3>Consent for Data Sharing</h3>
+            <p>To proceed with the registration, please confirm whether you agree to share the necessary details with service providers for seminar arrangements based on your needs.</p>
+            <div class="radio-group">
+                <div class="radio-item">
+                    <input type="radio" id="consentYes" name="dataConsent" value="yes" required>
+                    <label for="consentYes">Yes</label>
+                </div>
+                <div class="radio-item">
+                    <input type="radio" id="consentNo" name="dataConsent" value="no">
+                    <label for="consentNo">No</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of GDPR Notice Section -->
+
     <div class="info-notice">
         <p><i class="fas fa-info-circle"></i> Before submitting a request, please read the following information carefully.</p>
     </div>
@@ -363,9 +418,13 @@
                 <li>Sending an official request letter from the local KKL-JNF President/Director to the Head of the Education and Community Division</li>
                 <li>Submitting a written report with pictures after the program ends</li>
                 <li>Coordinating and covering local expenses, including:
-                    <ul style="list-style-type: disc;">
-                        <li style="position: static; padding-left: 0;">Accommodation and meals</li>
-                        <li style="position: static; padding-left: 0;">All transportation, including airport transfers</li>
+                    <ul style="list-style-type: disc; padding-left: 30px;">
+                        <li style="position: relative; padding-left: 0; margin-bottom: 10px;">
+                            Accommodation and meals
+                        </li>
+                        <li style="position: relative; padding-left: 0; margin-bottom: 10px;">
+                            All transportation, including airport transfers
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -631,6 +690,12 @@
         // Form submission handling
         document.getElementById('caravanForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // Check data consent
+            if (!document.querySelector('input[name="dataConsent"]:checked')) {
+                alert('Please indicate your consent for data sharing before proceeding');
+                return;
+            }
             
             // Validate dates
             const arrivalDate = new Date(document.getElementById('arrivalDate').value);
