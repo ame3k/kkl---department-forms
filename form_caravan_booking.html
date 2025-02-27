@@ -118,12 +118,6 @@
             padding-left: 30px;
         }
 
-        .responsibilities-list li {
-            position: relative;
-            margin-bottom: 10px;
-            padding-left: 5px;
-        }
-
         .responsibilities-list > li:before {
             font-family: 'Font Awesome 6 Free';
             content: '\f00c';
@@ -362,6 +356,13 @@
             background-color: #f5f5f5;
             border-radius: 4px;
         }
+        
+        /* Other field styles */
+        .other-field {
+            display: none;
+            margin-top: 10px;
+            animation: fadeIn 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -528,6 +529,9 @@
                 <option value="aged">Old Aged Homes</option>
                 <option value="other">Other</option>
             </select>
+            <div id="otherAudienceField" class="other-field">
+                <input type="text" name="otherAudienceDetails" placeholder="Please specify other audience details">
+            </div>
         </div>
 
         <div class="section-title"><i class="fas fa-map-marked-alt"></i> Requesting the program in multiple cities</div>
@@ -550,20 +554,25 @@
                     <td><input type="text" name="multiCity1" placeholder="City name"></td>
                     <td><input type="date" name="multiArrival1"></td>
                     <td><input type="date" name="multiDeparture1"></td>
-                    <td><select name="multiAudience1">
-                        <option value="">Select audience</option>
-                        <option value="kindergarten">Kindergarten (ages 3-5)</option>
-                        <option value="elementary">Elementary/Lower schools</option>
-                        <option value="middle">Middle Schools</option>
-                        <option value="high">High Schools</option>
-                        <option value="youth">Youth Movements</option>
-                        <option value="camps">Camps</option>
-                        <option value="college">College Students</option>
-                        <option value="community">Community Centers</option>
-                        <option value="synagogue">Synagogue</option>
-                        <option value="aged">Old Aged Homes</option>
-                        <option value="other">Other</option>
-                    </select></td>
+                    <td>
+                        <select name="multiAudience1" class="audienceSelect">
+                            <option value="">Select audience</option>
+                            <option value="kindergarten">Kindergarten (ages 3-5)</option>
+                            <option value="elementary">Elementary/Lower schools</option>
+                            <option value="middle">Middle Schools</option>
+                            <option value="high">High Schools</option>
+                            <option value="youth">Youth Movements</option>
+                            <option value="camps">Camps</option>
+                            <option value="college">College Students</option>
+                            <option value="community">Community Centers</option>
+                            <option value="synagogue">Synagogue</option>
+                            <option value="aged">Old Aged Homes</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="other-field city-other-field">
+                            <input type="text" name="otherCityAudience1" placeholder="Please specify audience">
+                        </div>
+                    </td>
                     <td><button type="button" class="delete-city" title="Remove city"><i class="fas fa-trash-alt"></i></button></td>
                 </tr>
             </tbody>
@@ -615,6 +624,44 @@
     </form>
 
     <script>
+        // Handle "Other" field for main target audience
+        document.getElementById('targetAudience').addEventListener('change', function() {
+            const otherField = document.getElementById('otherAudienceField');
+            const input = otherField.querySelector('input');
+            
+            if (this.value === 'other') {
+                otherField.style.display = 'block';
+                input.required = true;
+            } else {
+                otherField.style.display = 'none';
+                input.required = false;
+                input.value = '';
+            }
+        });
+        
+        // Handle "Other" fields for city audiences
+        function handleCityAudienceChange(select) {
+            const parentCell = select.closest('td');
+            const otherField = parentCell.querySelector('.city-other-field');
+            const input = otherField.querySelector('input');
+            
+            if (select.value === 'other') {
+                otherField.style.display = 'block';
+                input.required = true;
+            } else {
+                otherField.style.display = 'none';
+                input.required = false;
+                input.value = '';
+            }
+        }
+        
+        // Initialize all existing audience selects
+        document.querySelectorAll('.audienceSelect').forEach(select => {
+            select.addEventListener('change', function() {
+                handleCityAudienceChange(this);
+            });
+        });
+        
         // Show/hide other commitment field with animation
         document.querySelectorAll('input[name="commitment"]').forEach(radio => {
             radio.addEventListener('change', function() {
@@ -637,23 +684,34 @@
                 <td><input type="text" name="multiCity${cityRowCount}" placeholder="City name"></td>
                 <td><input type="date" name="multiArrival${cityRowCount}"></td>
                 <td><input type="date" name="multiDeparture${cityRowCount}"></td>
-                <td><select name="multiAudience${cityRowCount}">
-                    <option value="">Select audience</option>
-                    <option value="kindergarten">Kindergarten (ages 3-5)</option>
-                    <option value="elementary">Elementary/Lower schools</option>
-                    <option value="middle">Middle Schools</option>
-                    <option value="high">High Schools</option>
-                    <option value="youth">Youth Movements</option>
-                    <option value="camps">Camps</option>
-                    <option value="college">College Students</option>
-                    <option value="community">Community Centers</option>
-                    <option value="synagogue">Synagogue</option>
-                    <option value="aged">Old Aged Homes</option>
-                    <option value="other">Other</option>
-                </select></td>
+                <td>
+                    <select name="multiAudience${cityRowCount}" class="audienceSelect">
+                        <option value="">Select audience</option>
+                        <option value="kindergarten">Kindergarten (ages 3-5)</option>
+                        <option value="elementary">Elementary/Lower schools</option>
+                        <option value="middle">Middle Schools</option>
+                        <option value="high">High Schools</option>
+                        <option value="youth">Youth Movements</option>
+                        <option value="camps">Camps</option>
+                        <option value="college">College Students</option>
+                        <option value="community">Community Centers</option>
+                        <option value="synagogue">Synagogue</option>
+                        <option value="aged">Old Aged Homes</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="other-field city-other-field">
+                        <input type="text" name="otherCityAudience${cityRowCount}" placeholder="Please specify audience">
+                    </div>
+                </td>
                 <td><button type="button" class="delete-city" title="Remove city"><i class="fas fa-trash-alt"></i></button></td>
             `;
             document.getElementById('cityTableBody').appendChild(newRow);
+            
+            // Attach event listeners to the new row
+            const newSelect = newRow.querySelector('.audienceSelect');
+            newSelect.addEventListener('change', function() {
+                handleCityAudienceChange(this);
+            });
             
             // Attach delete event to the new delete button
             attachDeleteEvents();
@@ -701,6 +759,33 @@
                 alert('Please indicate your consent for data sharing before proceeding');
                 return;
             }
+            
+            // Check if "other" is selected for main audience but not specified
+            if (document.getElementById('targetAudience').value === 'other') {
+                const otherAudienceInput = document.querySelector('input[name="otherAudienceDetails"]');
+                if (!otherAudienceInput.value.trim()) {
+                    alert('Please specify the other audience type');
+                    otherAudienceInput.focus();
+                    return;
+                }
+            }
+            
+            // Check if "other" is selected for any city audience but not specified
+            let otherCityAudienceValid = true;
+            document.querySelectorAll('#cityTableBody tr').forEach((row) => {
+                const audienceSelect = row.querySelector('.audienceSelect');
+                if (audienceSelect && audienceSelect.value === 'other') {
+                    const otherInput = row.querySelector('.city-other-field input');
+                    if (!otherInput.value.trim()) {
+                        alert('Please specify the other audience type for all cities');
+                        otherInput.focus();
+                        otherCityAudienceValid = false;
+                        return;
+                    }
+                }
+            });
+            
+            if (!otherCityAudienceValid) return;
             
             // Validate dates
             const arrivalDate = new Date(document.getElementById('arrivalDate').value);
@@ -754,7 +839,9 @@
             alert('Form submitted successfully! A representative will contact you for further coordination.');
             this.reset();
             document.getElementById('otherCommitmentField').style.display = 'none';
+            document.getElementById('otherAudienceField').style.display = 'none';
+            document.querySelectorAll('.city-other-field').forEach(field => {
+                field.style.display = 'none';
+            });
         });
     </script>
-</body>
-</html>
