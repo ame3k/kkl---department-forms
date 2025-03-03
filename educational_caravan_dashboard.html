@@ -1,4 +1,12 @@
-<!DOCTYPE html>
+<!-- Notes -->
+            <div id="tab-notes" class="tab-content">
+                <div class="booking-details" style="display: block;">
+                    <div class="booking-detail-item">
+                        <div class="detail-label">Special Requests:</div>
+                        <div>Need French-speaking madrichim with experience working with teenagers. The community requests materials emphasizing the connection between the French Jewish community and Israel, focusing on Aliyah and settlement.</div>
+                    </div>
+                </div>
+            </div><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -567,6 +575,7 @@
                 <div class="tab" onclick="switchTab('tab-dates')">Dates & Locations</div>
                 <div class="tab" onclick="switchTab('tab-audience')">Target Audience</div>
                 <div class="tab" onclick="switchTab('tab-logistics')">Logistics</div>
+                <div class="tab" onclick="switchTab('tab-status')">Request Status</div>
                 <div class="tab" onclick="switchTab('tab-notes')">Notes</div>
                 <div class="tab" onclick="switchTab('tab-logs')">Action Log</div>
                 <div class="tab" onclick="switchTab('tab-all')">All Details</div>
@@ -747,12 +756,30 @@
                 </div>
             </div>
             
-            <!-- Notes -->
-            <div id="tab-notes" class="tab-content">
+            <!-- Request Status -->
+            <div id="tab-status" class="tab-content">
                 <div class="booking-details" style="display: block;">
                     <div class="booking-detail-item">
-                        <div class="detail-label">Special Requests:</div>
-                        <div>Need French-speaking madrichim with experience working with teenagers. The community requests materials emphasizing the connection between the French Jewish community and Israel, focusing on Aliyah and settlement.</div>
+                        <div class="detail-label">Current Status:</div>
+                        <div class="status-cell status-pending">Pending Approval</div>
+                    </div>
+                    <div class="booking-detail-item">
+                        <div class="detail-label">Last Status Update:</div>
+                        <div>02/01/2025 10:30</div>
+                    </div>
+                    <div class="booking-detail-item">
+                        <div class="detail-label">Updated By:</div>
+                        <div>Dana Cohen</div>
+                    </div>
+                    
+                    <div class="booking-detail-item" id="madrichim-container" style="display: none;">
+                        <div class="detail-label">Assigned Madrichim:</div>
+                        <div id="assigned-madrichim">None assigned yet</div>
+                    </div>
+                    
+                    <div class="booking-detail-item" id="rejection-reason-container" style="display: none;">
+                        <div class="detail-label">Rejection Reason:</div>
+                        <div id="rejection-reason">Not rejected</div>
                     </div>
                 </div>
             </div>
@@ -884,10 +911,64 @@
             </div>
             
             <div class="action-buttons">
-                <button class="action-button approve-btn">Approve Request</button>
-                <button class="action-button process-btn">Move to In Progress</button>
-                <button class="action-button cancel-btn">Cancel Request</button>
+                <button class="action-button approve-btn" onclick="showApproveModal()">Approve Request</button>
+                <button class="action-button process-btn" onclick="moveToProcessing()">Move to In Progress</button>
+                <button class="action-button cancel-btn" onclick="showRejectModal()">Reject Request</button>
                 <button class="go-back" onclick="closeModal()">Return to Dashboard</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Approval Modal -->
+    <div id="approvalModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close" onclick="closeApproveModal()">&times;</span>
+            <h2>Approve Caravan Request</h2>
+            <p>To approve this request, please assign madrichim who will lead the caravan.</p>
+            
+            <div class="madrichim-form">
+                <div id="madrichim-list">
+                    <div class="madrich-input" style="margin-bottom: 10px;">
+                        <input type="text" placeholder="Enter madrich/madricha name" style="width: 100%; padding: 8px;">
+                    </div>
+                </div>
+                
+                <button id="add-madrich-btn" style="background-color: #0E6C4D; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 10px;">
+                    <i class="fas fa-plus"></i> Add Another Madrich
+                </button>
+                
+                <div style="margin-top: "20px;">
+                    <p style="color: red; font-size: 14px;" id="approval-error"></p>
+                </div>
+                
+                <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                    <button onclick="closeApproveModal()" style="background-color: #ccc; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+                        Cancel
+                    </button>
+                    <button onclick="confirmApproval()" style="background-color: #C8E6C9; color: #1B5E20; font-weight: bold; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+                        Confirm Approval
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Rejection Modal -->
+    <div id="rejectionModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close" onclick="closeRejectModal()">&times;</span>
+            <h2>Reject Caravan Request</h2>
+            <p>Please provide a reason for rejecting this request:</p>
+            
+            <textarea id="rejection-reason-input" style="width: 100%; min-height: 100px; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+            
+            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                <button onclick="closeRejectModal()" style="background-color: #ccc; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+                    Cancel
+                </button>
+                <button onclick="confirmRejection()" style="background-color: #FFCDD2; color: #B71C1C; font-weight: bold; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+                    Confirm Rejection
+                </button>
             </div>
         </div>
     </div>
@@ -939,26 +1020,179 @@
             button.addEventListener('click', function() {
                 const statusSelect = this.previousElementSibling;
                 const statusCell = this.closest('tr').querySelector('.status-cell');
+                const selectedStatus = statusSelect.value;
+                
+                if (selectedStatus === 'approved') {
+                    showApproveModal();
+                    return;
+                } else if (selectedStatus === 'cancelled') {
+                    showRejectModal();
+                    return;
+                }
                 
                 // Remove old status classes
                 statusCell.classList.remove('status-pending', 'status-processing', 'status-approved', 'status-cancelled');
                 
                 // Add new status class
-                statusCell.classList.add('status-' + statusSelect.value);
+                statusCell.classList.add('status-' + selectedStatus);
                 
                 // Update status text
                 const statusTexts = {
                     'pending': 'Pending Approval',
                     'processing': 'In Progress',
                     'approved': 'Approved',
-                    'cancelled': 'Cancelled'
+                    'cancelled': 'Rejected'
                 };
                 
-                statusCell.textContent = statusTexts[statusSelect.value];
+                statusCell.textContent = statusTexts[selectedStatus];
                 
                 alert('Status updated successfully!');
             });
         });
+        
+        // Approval Modal Functions
+        function showApproveModal() {
+            document.getElementById('approvalModal').style.display = 'block';
+        }
+        
+        function closeApproveModal() {
+            document.getElementById('approvalModal').style.display = 'none';
+        }
+        
+        function confirmApproval() {
+            // Get all madrichim inputs
+            const madrichInputs = document.querySelectorAll('.madrich-input input');
+            const madrichimNames = [];
+            
+            // Collect non-empty inputs
+            madrichInputs.forEach(input => {
+                if (input.value.trim()) {
+                    madrichimNames.push(input.value.trim());
+                }
+            });
+            
+            // Validate that at least one madrich is assigned
+            if (madrichimNames.length === 0) {
+                document.getElementById('approval-error').textContent = 'Please assign at least one madrich to approve the request';
+                return;
+            }
+            
+            // Update the status
+            updateRequestStatus('approved', madrichimNames.join(', '));
+            
+            // Close the modal
+            closeApproveModal();
+        }
+        
+        // Rejection Modal Functions
+        function showRejectModal() {
+            document.getElementById('rejectionModal').style.display = 'block';
+        }
+        
+        function closeRejectModal() {
+            document.getElementById('rejectionModal').style.display = 'none';
+        }
+        
+        function confirmRejection() {
+            const reason = document.getElementById('rejection-reason-input').value.trim();
+            
+            if (!reason) {
+                alert('Please provide a reason for rejection');
+                return;
+            }
+            
+            // Update the status
+            updateRequestStatus('cancelled', null, reason);
+            
+            // Close the modal
+            closeRejectModal();
+        }
+        
+        // Add more madrich input field
+        document.getElementById('add-madrich-btn').addEventListener('click', function() {
+            const madrichList = document.getElementById('madrichim-list');
+            const newInput = document.createElement('div');
+            newInput.className = 'madrich-input';
+            newInput.style.marginBottom = '10px';
+            newInput.innerHTML = `<input type="text" placeholder="Enter madrich/madricha name" style="width: 100%; padding: 8px;">`;
+            madrichList.appendChild(newInput);
+        });
+        
+        // Move to processing status
+        function moveToProcessing() {
+            updateRequestStatus('processing');
+        }
+        
+        // Update request status
+        function updateRequestStatus(status, madrichim = null, rejectionReason = null) {
+            // Update main table row
+            const statusTexts = {
+                'pending': 'Pending Approval',
+                'processing': 'In Progress',
+                'approved': 'Approved',
+                'cancelled': 'Rejected'
+            };
+            
+            // Update in the main table
+            const currentRowId = document.getElementById('requestIdDisplay').textContent.replace('#', '');
+            const tableRow = document.querySelector(`#requestsTable tbody tr td:first-child:contains('${currentRowId}')`).closest('tr');
+            
+            if (tableRow) {
+                const statusCell = tableRow.querySelector('.status-cell');
+                statusCell.classList.remove('status-pending', 'status-processing', 'status-approved', 'status-cancelled');
+                statusCell.classList.add('status-' + status);
+                statusCell.textContent = statusTexts[status];
+            }
+            
+            // Update in the modal
+            const modalStatusCell = document.querySelector('#tab-status .status-cell');
+            modalStatusCell.classList.remove('status-pending', 'status-processing', 'status-approved', 'status-cancelled');
+            modalStatusCell.classList.add('status-' + status);
+            modalStatusCell.textContent = statusTexts[status];
+            
+            // Update last update info
+            const currentDate = new Date();
+            const formattedDate = `${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getDate().toString().padStart(2, '0')}/${currentDate.getFullYear()} ${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
+            
+            document.querySelector('#tab-status .booking-detail-item:nth-child(2) div:nth-child(2)').textContent = formattedDate;
+            
+            // Update madrichim if provided
+            if (madrichim) {
+                document.getElementById('madrichim-container').style.display = 'block';
+                document.getElementById('assigned-madrichim').textContent = madrichim;
+            }
+            
+            // Update rejection reason if provided
+            if (rejectionReason) {
+                document.getElementById('rejection-reason-container').style.display = 'block';
+                document.getElementById('rejection-reason').textContent = rejectionReason;
+            }
+            
+            // Add to action log
+            const logAction = status === 'approved' ? 'Request Approved' : 
+                             status === 'cancelled' ? 'Request Rejected' : 
+                             status === 'processing' ? 'Moved to In Progress' : 'Status Updated';
+            
+            const logTable = document.querySelector('#tab-logs table tbody');
+            const newLogRow = document.createElement('tr');
+            
+            newLogRow.innerHTML = `
+                <td>${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getDate().toString().padStart(2, '0')}/${currentDate.getFullYear()}</td>
+                <td>${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}</td>
+                <td>${logAction}</td>
+                <td>Current User</td>
+            `;
+            
+            logTable.insertBefore(newLogRow, logTable.firstChild);
+            
+            // Show success message
+            alert(`Request has been ${status === 'approved' ? 'approved' : status === 'cancelled' ? 'rejected' : 'updated'} successfully!`);
+        }
+        
+        // Helper function to find elements with text content
+        Element.prototype.contains = function(text) {
+            return this.textContent.includes(text);
+        };
 
         // City data by country
         const citiesByCountry = {
