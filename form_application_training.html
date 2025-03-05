@@ -85,6 +85,13 @@
         .section-title i {
             margin-left: 10px;
         }
+        
+        .section-subtitle {
+            color: #0E6C4D;
+            font-size: 16px;
+            margin: 15px 0 5px 0;
+            font-weight: bold;
+        }
 
         .form-row {
             display: flex;
@@ -451,6 +458,14 @@
                 </thead>
                 <tbody>
                     <tr>
+                        <td>עברית</td>
+                        <td><div class="radio-circle" data-lang="hebrew" data-level="1"></div></td>
+                        <td><div class="radio-circle" data-lang="hebrew" data-level="2"></div></td>
+                        <td><div class="radio-circle" data-lang="hebrew" data-level="3"></div></td>
+                        <td><div class="radio-circle" data-lang="hebrew" data-level="4"></div></td>
+                        <td><div class="radio-circle" data-lang="hebrew" data-level="5"></div></td>
+                    </tr>
+                    <tr>
                         <td>אנגלית</td>
                         <td><div class="radio-circle" data-lang="english" data-level="1"></div></td>
                         <td><div class="radio-circle" data-lang="english" data-level="2"></div></td>
@@ -526,6 +541,7 @@
             </table>
             
             <!-- Hidden fields to store the language values -->
+            <input type="hidden" id="hebrewLevel" name="hebrewLevel" value="">
             <input type="hidden" id="englishLevel" name="englishLevel" value="">
             <input type="hidden" id="spanishLevel" name="spanishLevel" value="">
             <input type="hidden" id="frenchLevel" name="frenchLevel" value="">
@@ -580,19 +596,21 @@
                 <label>האם יש לך ניסיון בהדרכה ו/או חינוך?</label>
                 <div class="radio-group">
                     <div class="radio-item">
-                        <input type="radio" id="experienceYes" name="hasExperience" value="yes">
+                        <input type="radio" id="experienceYes" name="hasExperience" value="yes" onchange="toggleExperienceFields()">
                         <label for="experienceYes">כן</label>
                     </div>
                     <div class="radio-item">
-                        <input type="radio" id="experienceNo" name="hasExperience" value="no">
+                        <input type="radio" id="experienceNo" name="hasExperience" value="no" onchange="toggleExperienceFields()">
                         <label for="experienceNo">לא</label>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="experience" class="required">אנא פרט את ניסיונך</label>
-                <textarea id="experience" name="experience" required></textarea>
+            <div id="experienceFields" class="conditional-field">
+                <div class="form-group">
+                    <label for="experience" class="required">אנא פרט את ניסיונך</label>
+                    <textarea id="experience" name="experience"></textarea>
+                </div>
             </div>
 
             <div class="section-title"><i class="fas fa-calendar-alt"></i> זמינות למחזורי שליחות</div>
@@ -625,13 +643,85 @@
                 </div>
             </div>
 
-            <div class="note">
-                <p><i class="fas fa-exclamation-circle"></i> <strong>לתשומת לבך:</strong></p>
-                <p>1. השליחים מקבלים את כל הוצאות הנסיעות + אירוח + אש"ל + ביטוח רפואי</p>
-                <p>2. היציאה היא בזוגות - לא ניתן לצאת לבד</p>
-                <p>3. אין אפשרות לצאת עם בני\בנות משפחה</p>
-                <p>4. יום המיון וההכשרה יתקיים בירושלים בתאריכים 23-24.12.2024</p>
-                <p>5. התאריכים המדויקים לשליחות יימסרו לאחר תהליך המיון</p>
+            <!-- אזור הממליצים -->
+            <div class="section-title"><i class="fas fa-users"></i> ממליצים</div>
+            <div class="info-notice">
+                <p>נא לכתוב כאן פרטי שלוש ממליצים:</p>
+            </div>
+
+            <!-- ממליץ 1 -->
+            <div class="form-group">
+                <h3 class="section-subtitle">ממליץ 1</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reference1Name" class="required">שם הממליץ</label>
+                        <input type="text" id="reference1Name" name="reference1Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reference1Role" class="required">תפקיד הממליץ</label>
+                        <input type="text" id="reference1Role" name="reference1Role" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reference1Phone" class="required">מספר טלפון נייד</label>
+                        <input type="tel" id="reference1Phone" name="reference1Phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reference1Email" class="required">כתובת אי מייל</label>
+                        <input type="email" id="reference1Email" name="reference1Email" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ממליץ 2 -->
+            <div class="form-group">
+                <h3 class="section-subtitle">ממליץ 2</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reference2Name" class="required">שם הממליץ</label>
+                        <input type="text" id="reference2Name" name="reference2Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reference2Role" class="required">תפקיד הממליץ</label>
+                        <input type="text" id="reference2Role" name="reference2Role" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reference2Phone" class="required">מספר טלפון נייד</label>
+                        <input type="tel" id="reference2Phone" name="reference2Phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reference2Email" class="required">כתובת אי מייל</label>
+                        <input type="email" id="reference2Email" name="reference2Email" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ממליץ 3 -->
+            <div class="form-group">
+                <h3 class="section-subtitle">ממליץ 3</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reference3Name" class="required">שם הממליץ</label>
+                        <input type="text" id="reference3Name" name="reference3Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reference3Role" class="required">תפקיד הממליץ</label>
+                        <input type="text" id="reference3Role" name="reference3Role" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reference3Phone" class="required">מספר טלפון נייד</label>
+                        <input type="tel" id="reference3Phone" name="reference3Phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reference3Email" class="required">כתובת אי מייל</label>
+                        <input type="email" id="reference3Email" name="reference3Email" required>
+                    </div>
+                </div>
             </div>
 
             <div class="section-title"><i class="fas fa-question-circle"></i> שאלות נוספות</div>
@@ -700,6 +790,16 @@
             }
         }
         
+        // Toggle experience fields visibility
+        function toggleExperienceFields() {
+            const experienceFields = document.getElementById('experienceFields');
+            if (document.getElementById('experienceYes').checked) {
+                experienceFields.style.display = 'block';
+            } else {
+                experienceFields.style.display = 'none';
+            }
+        }
+        
         // File upload handling
         document.getElementById('uploadBtn').addEventListener('click', function() {
             document.getElementById('cvFile').click();
@@ -746,7 +846,7 @@
             
             // Validate language selections
             let languageSelected = false;
-            ['englishLevel', 'spanishLevel', 'frenchLevel', 'russianLevel', 
+            ['hebrewLevel', 'englishLevel', 'spanishLevel', 'frenchLevel', 'russianLevel', 
              'portugueseLevel', 'germanLevel', 'italianLevel', 'other1Level', 'other2Level'].forEach(langId => {
                 if (document.getElementById(langId).value) {
                     languageSelected = true;
@@ -792,6 +892,15 @@
                 }
             }
             
+            // Check if experience fields are filled if "yes" is selected
+            if (document.getElementById('experienceYes').checked) {
+                if (!document.getElementById('experience').value) {
+                    alert('אנא פרט את ניסיונך בהדרכה');
+                    document.getElementById('experience').focus();
+                    return;
+                }
+            }
+            
             // Check if CV file is uploaded
             if (!document.getElementById('cvFile').files[0]) {
                 alert('אנא העלה קובץ קורות חיים עם תמונה');
@@ -809,7 +918,7 @@
             });
             
             // Reset hidden fields
-            ['englishLevel', 'spanishLevel', 'frenchLevel', 'russianLevel', 
+            ['hebrewLevel', 'englishLevel', 'spanishLevel', 'frenchLevel', 'russianLevel', 
              'portugueseLevel', 'germanLevel', 'italianLevel', 'other1Level', 'other2Level'].forEach(langId => {
                 document.getElementById(langId).value = '';
             });
@@ -819,6 +928,7 @@
             
             // Reset conditional fields
             document.getElementById('youthMovementFields').style.display = 'none';
+            document.getElementById('experienceFields').style.display = 'none';
         });
     </script>
 </body>
